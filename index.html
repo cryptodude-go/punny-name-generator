@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Bilingual punny game-name generator with 20 results, 1,000+ vocabulary entries and 48 wordplay templates." />
+  <title>Punny Game Name Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <p class="eyebrow" data-i18n="eyebrow">GAME NAME LAB</p>
+          <h1 data-i18n-html="headline">Generate <span>20 punny names</span> at once.</h1>
+        </div>
+        <div class="language-switch" aria-label="Language">
+          <button class="lang-btn is-active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="mk">MK Latinica</button>
+        </div>
+      </div>
+      <p class="lead" data-i18n="lead">Smart wordplay, large vocabulary and recent-repeat protection — all in your browser.</p>
+      <div class="stats" aria-label="Generator stats">
+        <span><strong id="vocabStat">1,000+</strong> <span data-i18n="vocabEntries">vocabulary entries</span></span>
+        <span><strong id="templateStat">48</strong> <span data-i18n="templates">pun templates</span></span>
+        <span><strong>20</strong> <span data-i18n="perRoll">names per roll</span></span>
+      </div>
+    </section>
+
+    <section class="generator" aria-label="Name generator">
+      <nav class="tabs" id="tabs" aria-label="Name styles">
+        <button class="tab is-active" data-mode="punny" data-i18n="tabPunny">Punny Wordplay</button>
+        <button class="tab" data-mode="funny" data-i18n="tabFunny">Funny Names</button>
+        <button class="tab" data-mode="alliteration" data-i18n="tabAlliteration">Whimsical Alliteration</button>
+        <button class="tab" data-mode="aristocrat" data-i18n="tabAristocrat">Pompous Aristocrats</button>
+        <button class="tab" data-mode="direct" data-i18n="tabDirect">Direct Descriptions</button>
+      </nav>
+
+      <div class="controls">
+        <label>
+          <span data-i18n="themeLabel">Game theme</span>
+          <select id="theme"></select>
+        </label>
+        <label>
+          <span data-i18n="vibeLabel">Vibe</span>
+          <select id="vibe"></select>
+        </label>
+        <label>
+          <span data-i18n="lengthLabel">Name length</span>
+          <select id="length"></select>
+        </label>
+      </div>
+
+      <div class="smart-row">
+        <div class="smart-badge"><span class="dot"></span><span data-i18n="smartLogic">Smart logic: theme scoring + diversity + recent-repeat protection</span></div>
+        <button class="text-btn" id="resetHistory" data-i18n="resetHistory">Reset repeat history</button>
+      </div>
+
+      <div class="toolbar">
+        <div>
+          <strong id="resultTitle">Punny Wordplay</strong>
+          <span id="resultCount">20 fresh names</span>
+        </div>
+        <button class="ghost" id="copyAll" data-i18n="copyAll">Copy all</button>
+      </div>
+
+      <div class="results" id="results" aria-live="polite"></div>
+
+      <div class="actions">
+        <button class="primary" id="generateBtn"><span data-i18n="generate">Generate 20 Names</span></button>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Copied!</div>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
