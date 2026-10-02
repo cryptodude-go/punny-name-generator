@@ -2,6 +2,7 @@
   'use strict';
 
   const DATA = window.NAME_LAB_DATA;
+  const PUNS = window.PUNNY_PHONETIC_DATA;
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => [...document.querySelectorAll(s)];
 
@@ -26,43 +27,26 @@
     mk: {
       any:['Rogue','Mage','Tank','Healer','Bard','Lovec','Vitez','Wizard','Pilot','Inzener','Paladin','Ranger'],
       fantasy:['Rogue','Mage','Bard','Vitez','Druid','Wizard','Paladin','Ranger','Warlock','Klerik'],
-      rogue:['Rogue','Assassin','Kradec','Bandit','Senka','Lockpicker'], mage:['Mage','Wizard','Warlock','Sorcerer','Enchant-er','Nekromant'],
+      rogue:['Rogue','Assassin','Kradec','Bandit','Senka','Lockpicker'], mage:['Mage','Wizard','Warlock','Sorcerer','Enchanter','Nekromant'],
       warrior:['Tank','Warrior','Vitez','Berserker','Cuvar','Borec'], scifi:['Pilot','Inzener','Android','Gunner','Haker','Cyborg'], casual:['Farmer','Gotvac','Pekar','Sobirac','Ribar','Gradinar']
     }
   };
 
   const DIRECT_TRAITS = {
     en:['Always Late','Has Low Mana','Has No Aim','Is Too Lucky','Needs Loot','Never Blocks','Misses Crits','Steals Potions','Hates Quests','Runs From Bosses','Picks Every Lock','Talks To NPCs','Breaks Stealth','Pulls Early','Forgets Cooldowns','Needs A Map','Has One HP','Queues Alone','Farms At Midnight','Loots Everything'],
-    mk:['Sekogas Docni','Nema Mana','Nema Aim','Ima Premnogu Sreka','Bara Loot','Nikogas Ne Blokira','Gi Promasuva Critovite','Kradi Potions','Ne Saka Questovi','Bega Od Boss','Go Otvora Sekoj Chest','Zbori So NPC','Go Krshi Stealthot','Pull-a Prerano','Gi Zaborava Cooldownite','Mu Treba Mapa','Ima Eden HP','Queue-a Sam','Farma Na Polnokj','Looota Se']
+    mk:['Sekogas Docni','Nema Mana','Nema Aim','Ima Premnogu Sreka','Bara Loot','Nikogas Ne Blokira','Gi Promasuva Critovite','Kradi Potions','Ne Saka Questovi','Bega Od Boss','Go Otvora Sekoj Chest','Zbori So NPC','Go Krshi Stealthot','Pulla Prerano','Gi Zaborava Cooldownite','Mu Treba Mapa','Ima Eden HP','Queue-a Sam','Farma Na Polnokj','Loota Se']
   };
 
   const PHRASES = {
     en: {
       noPlan:['No Plan','One HP','Bad WiFi','Tiny Boots','Big Dreams','No Map','Extra Snacks','Zero Mana','Too Much Loot','One Cooldown'],
-      connectors:['of the','from the','with the','without the','and the','versus the'],
-      places:['Basement','Dungeon','Lobby','Back Row','Spawn Point','Moon','Void','Couch','Kitchen','Guild Hall','Last Checkpoint'],
-      actions:['Again','By Night','For Days','To Win','Or Never','As Usual','On Cooldown','Before Breakfast','After Respawn','Without Context'],
-      descriptors:['Collector','Dealer','Bandit','Magnet','Gremlin','Machine','Goblin','Whisperer','Inspector','Manager','Enjoyer','Technician']
+      places:['Basement','Dungeon','Lobby','Back Row','Spawn Point','Moon','Void','Couch','Kitchen','Guild Hall','Last Checkpoint']
     },
     mk: {
       noPlan:['Bez Plan','So Eden HP','So Los WiFi','So Mali Cizmi','So Golemi Sonishta','Bez Mapa','So Ekstra Gricki','Bez Mana','So Premnogu Loot','So Eden Cooldown'],
-      connectors:['od','od kaj','so','bez','i','protiv'],
-      places:['Podrum','Dungeon','Lobby','Posledna Klupa','Spawn Point','Mesec','Void','Kauc','Kujna','Guild Sala','Posleden Checkpoint'],
-      actions:['Pak','Nokje','Cel Den','Za Pobeda','Ili Nikogas','Kako Sekogas','Na Cooldown','Pred Dorucek','Po Respawn','Bez Kontekst'],
-      descriptors:['Sobirac','Diler','Bandit','Magnet','Gremlin','Masina','Goblin','Shepotac','Inspektor','Menadzer','Uzhivatel','Tehnicar']
+      places:['Podrum','Dungeon','Lobby','Posledna Klupa','Spawn Point','Mesec','Void','Kauc','Kujna','Guild Sala','Posleden Checkpoint']
     }
   };
-
-  // 48 distinct pun/wordplay construction templates. Some are language-aware frames,
-  // some are phonetic/name transforms, and some are constrained game-term jokes.
-  const PUN_TEMPLATES = [
-    'curated','title_root_suffix','first_game_surname','game_casual','game_creature','adj_game','game_descriptor','role_no_plan',
-    'root_actions','title_game_action','game_of_noun','lord_of_plural','resting_game_face','no_game_sherlock','game_me_maybe','ctrl_alt_game',
-    'game_before_greed','fast_and_game','raiders_lost_game','game_against_machine','game_club','game_floyd','game_skywalker','obi_game_kenobi',
-    'darth_game','harry_game','gandalf_game','sherlock_creature','creature_mercy','game_you_next','game_del_rey','back_game_band',
-    'imp_my_noun','noun_park','gameifer','need_before_game','doctor_game','professor_game','captain_game','sir_game',
-    'split_name','slavic_game_name','game_ovski','maalo_role','food_role','tool_role','game_na_rati','game_do_plafon'
-  ];
 
   function randomInt(max) {
     if (max <= 1) return 0;
@@ -74,7 +58,6 @@
   const pick = (arr) => arr[randomInt(arr.length)];
   const cap = (s) => String(s).replace(/\b[a-z]/g, c => c.toUpperCase());
   const normalize = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g,'');
-  const pluralize = (w) => /s$/i.test(w) ? w : /y$/i.test(w) ? w.slice(0,-1)+'ies' : w+'s';
   const L = () => DATA.lexicon[state.lang];
   const T = () => DATA.i18n[state.lang];
 
@@ -82,6 +65,10 @@
     const all = [];
     for (const lang of ['en','mk']) for (const arr of Object.values(DATA.lexicon[lang])) all.push(...arr);
     return new Set(all.map(x => x.toLowerCase())).size;
+  }
+
+  function phoneticRuleCount() {
+    return new Set(PUNS[state.lang].map(x => x.rule)).size;
   }
 
   function pool(category) { return L()[category] || []; }
@@ -103,81 +90,21 @@
   function adjective() { return pick(pool('adjectives')); }
   function casual() { return pick(pool('casual')); }
   function creature() { return pick(pool('creatures')); }
-  function object() { return pick(pool('objects')); }
   function title() { return pick(pool('titles')); }
-  function firstName() { return pick(pool('firstNames')); }
-  function suffix() { return pick(pool('suffixes')); }
 
-  function curatedCandidate() {
-    const all = DATA.curated[state.lang];
-    let candidates = all.filter(x => x[2] === 'any' || state.theme === 'any' || x[2] === state.theme);
-    if (!candidates.length) candidates = all;
-    const [name, meaning] = pick(candidates);
-    return {name, meaning, template:'curated', quality:12};
-  }
-
-  function makePun(template) {
-    const g = themedGameWord(); const n = themedNoun(); const c = casual(); const cr = creature();
-    const a = adjective(); const r = role(); const p = PHRASES[state.lang];
-    const mk = state.lang === 'mk';
-    let name = '', meaning = mk ? 'Igra so zborovi' : 'Structured game wordplay';
-
-    switch (template) {
-      case 'curated': return curatedCandidate();
-      case 'title_root_suffix': name = `${title()} ${cap(g)}${suffix()}`; break;
-      case 'first_game_surname': name = `${firstName()} ${cap(g)}${pick(mk?['ovski','evski','ov','ev','ski']:['son','ton','ford','well','wood','man'])}`; break;
-      case 'game_casual': name = `${cap(g)} ${cap(c)}`; break;
-      case 'game_creature': name = `${cap(g)} ${cap(cr)}`; break;
-      case 'adj_game': name = `${cap(a)} ${cap(g)}`; break;
-      case 'game_descriptor': name = `${cap(g)} ${pick(p.descriptors)}`; break;
-      case 'role_no_plan': name = `${r} ${mk?'So':'With'} ${pick(p.noPlan)}`.replace(/So So /,'So '); break;
-      case 'root_actions': name = `${cap(g)} ${pick(p.actions)}`; break;
-      case 'title_game_action': name = `${title()} ${cap(g)} ${pick(mk?['Pak','Na Smenu','Bez Plan','Od Maalo']:['Again','On Duty','No Plan','From Spawn'])}`; break;
-      case 'game_of_noun': name = mk ? `${cap(g)} Na ${cap(n)}` : `${cap(g)} of ${cap(n)}`; break;
-      case 'lord_of_plural': name = mk ? `Gospodar Na ${cap(g)}` : `Lord of the ${cap(pluralize(g))}`; break;
-      case 'resting_game_face': name = mk ? `${cap(g)} Faca Na Odmor` : `Resting ${cap(g)} Face`; break;
-      case 'no_game_sherlock': name = mk ? `Ne E ${cap(g)}, Sherlock` : `No ${cap(g)} Sherlock`; break;
-      case 'game_me_maybe': name = mk ? `${cap(g)} Me Mozebi` : `${cap(g)} Me Maybe`; break;
-      case 'ctrl_alt_game': name = `Ctrl Alt ${cap(g)}`; break;
-      case 'game_before_greed': name = mk ? `${cap(g)} Pred Greed` : `${cap(g)} Before Greed`; break;
-      case 'fast_and_game': name = mk ? `Brzi I ${cap(g)}` : `The Fast and the ${cap(g)}ious`; break;
-      case 'raiders_lost_game': name = mk ? `Lovci Na Izgubeniot ${cap(g)}` : `Raiders of the Lost ${cap(g)}`; break;
-      case 'game_against_machine': name = `${cap(g)} Against the Machine`; break;
-      case 'game_club': name = `${cap(g)} Club`; break;
-      case 'game_floyd': name = `${cap(g)} Floyd`; break;
-      case 'game_skywalker': name = `${cap(g)} Skywalker`; break;
-      case 'obi_game_kenobi': name = `Obi ${cap(g)} Kenobi`; break;
-      case 'darth_game': name = `Darth ${cap(g)}`; break;
-      case 'harry_game': name = `Harry ${cap(g)}er`; break;
-      case 'gandalf_game': name = `Gandalf the ${cap(g)}`; break;
-      case 'sherlock_creature': name = `Sherlock ${cap(pluralize(cr))}`; break;
-      case 'creature_mercy': name = mk ? `${cap(cr)} Bez Milost` : `${cap(cr)} Mercy`; break;
-      case 'game_you_next': name = mk ? `${cap(g)} Ti Si Sleden` : `${cap(g)} You Next`; break;
-      case 'game_del_rey': name = `${cap(g)} Del Rey`; break;
-      case 'back_game_band': name = `${cap(g)} Sabbath`; break;
-      case 'imp_my_noun': name = mk ? `Imp Mi Go ${cap(object())}` : `Imp My ${cap(object())}`; break;
-      case 'noun_park': name = `${cap(n)} Park`; break;
-      case 'gameifer': name = `${cap(g)}ifer`; break;
-      case 'need_before_game': name = mk ? `Need Pred ${cap(g)}` : `Need Before ${cap(g)}`; break;
-      case 'doctor_game': name = `${mk?'Doktor':'Doctor'} ${cap(g)}`; break;
-      case 'professor_game': name = `${mk?'Profesor':'Professor'} ${cap(g)}`; break;
-      case 'captain_game': name = `${mk?'Kapetan':'Captain'} ${cap(g)}`; break;
-      case 'sir_game': name = `${mk?'Gospodin':'Sir'} ${cap(g)}`; break;
-      case 'split_name': {
-        const fn = firstName();
-        const tail = pick(mk?['ko','che','ce','mir','slav','dan','jan']:['o','y','er','ton','son','man']);
-        name = `${fn.slice(0, Math.max(2, Math.ceil(fn.length/2)))} ${cap(g)}${tail}`; break;
-      }
-      case 'slavic_game_name': name = mk ? `${cap(g)}${pick(['omir','oslav','ijan','ko','che','dan','jan'])}` : `${cap(g)}${pick(['bert','son','ley','ton','ford','man'])}`; break;
-      case 'game_ovski': name = mk ? `${cap(g)} ${cap(g)}ovski` : `${cap(g)} Mc${cap(g)}`; break;
-      case 'maalo_role': name = mk ? `${r} Od Maalo` : `${r} From The Block`; break;
-      case 'food_role': name = `${cap(c)} ${r}`; break;
-      case 'tool_role': name = `${cap(object())} ${r}`; break;
-      case 'game_na_rati': name = mk ? `${cap(g)} Na Rati` : `${cap(g)} On Credit`; break;
-      case 'game_do_plafon': name = mk ? `${cap(g)} Do Plafon` : `${cap(g)} Through The Roof`; break;
-      default: name = `${cap(g)} ${cap(n)}`;
-    }
-    return {name: cap(name), meaning, template, quality: template.includes('game_') ? 6 : 5};
+  // Punny mode is deliberately different from the other generators.
+  // It never joins random vocabulary. Every candidate must be a verified sound-alike
+  // (word, phrase or game phrase) stored in pun-data.js.
+  function phoneticUniverse() {
+    return PUNS[state.lang].map(x => ({
+      name: x.name,
+      meaning: x.sound,
+      rule: x.rule,
+      tags: x.tags || ['any'],
+      kind: x.kind || 'word',
+      template: 'phonetic',
+      quality: 16 + ((x.strength || 2) * 4)
+    }));
   }
 
   function makeFunny() {
@@ -201,7 +128,7 @@
       const nounPool = [...pool('fantasy'),...pool('casual'),...pool('creatures'),...pool('objects')].filter(w => w[0]?.toLowerCase() === initial);
       if (nounPool.length) return {name:`${cap(a)} ${cap(pick(nounPool))}`, meaning: state.lang==='mk'?`Aliteracija na ${initial.toUpperCase()}`:`${initial.toUpperCase()}-${initial.toUpperCase()} alliteration`, template:'alliteration', quality:5};
     }
-    return {name:`${cap(adjective())} ${cap(themedNoun())}`, meaning:'Alliteration-style name', template:'alliteration', quality:3};
+    return {name:`${cap(adjective())} ${cap(themedNoun())}`, meaning: state.lang==='mk'?'Aliteracija':'Alliteration-style name', template:'alliteration', quality:3};
   }
 
   function makeAristocrat() {
@@ -232,6 +159,63 @@
   }
   function isRecent(name, history) { return history.includes(normalize(`${state.lang}:${state.mode}:${name}`)); }
 
+  function scorePhonetic(item, history) {
+    let score = item.quality;
+    if (isRecent(item.name, history)) score -= 100;
+    if (lengthOK(item.name)) score += 4; else score -= 12;
+
+    // Theme is a preference, never a hard filter: a good pun always beats a bad themed pun.
+    if (state.theme !== 'any') {
+      if (item.tags.includes(state.theme)) score += 4;
+      else if (item.tags.includes('any')) score += 1;
+    }
+
+    if (state.vibe === 'clean') {
+      if (item.kind === 'word') score += 4;
+      if ((item.quality || 0) >= 28) score += 3;
+      if (item.kind === 'game') score -= 1;
+    } else if (state.vibe === 'silly') {
+      if (item.kind === 'phrase') score += 5;
+    } else if (state.vibe === 'epic') {
+      if (item.kind === 'game') score += 7;
+      if (item.tags.some(t => ['fantasy','rogue','mage','warrior','scifi'].includes(t))) score += 3;
+    }
+
+    score += randomInt(1000) / 1000;
+    return score;
+  }
+
+  function generatePunnyBatch(count, history) {
+    const items = phoneticUniverse();
+    const scored = items.map(item => ({...item, score: scorePhonetic(item, history)})).sort((a,b)=>b.score-a.score);
+    const out = [];
+    const ruleUse = new Map();
+    const soundUse = new Set();
+
+    for (const item of scored) {
+      if (out.length >= count) break;
+      if (!lengthOK(item.name) && scored.length > count * 2) continue;
+      const soundKey = normalize(item.meaning);
+      if (soundUse.has(soundKey)) continue;
+      const used = ruleUse.get(item.rule) || 0;
+      const maxPerRule = count >= 20 ? 2 : 1;
+      if (used >= maxPerRule) continue;
+      out.push(item);
+      soundUse.add(soundKey);
+      ruleUse.set(item.rule, used + 1);
+    }
+
+    // If a language/theme/length combination is too restrictive, relax only diversity,
+    // never phonetic quality. We still pull exclusively from verified sound-alikes.
+    for (const item of scored) {
+      if (out.length >= count) break;
+      if (out.some(x => normalize(x.name) === normalize(item.name))) continue;
+      out.push(item);
+    }
+
+    return out.slice(0, count);
+  }
+
   function scoreCandidate(item, history) {
     let score = item.quality || 0;
     if (isRecent(item.name, history)) score -= 50;
@@ -241,20 +225,11 @@
       const themedWords = themePool().slice(0,300).map(w => w.toLowerCase());
       if (themedWords.some(w => w.length > 3 && low.includes(w))) score += 3;
     }
-    if (state.vibe === 'clean' && item.template === 'curated') score += 5;
-    if (state.vibe === 'silly' && /casual|food_role|maalo_role|game_na_rati|game_do_plafon|funny/.test(item.template)) score += 4;
-    if (state.vibe === 'epic' && /title|lord|darth|gandalf|raiders|character/.test(item.template)) score += 4;
-    if (state.mode === 'punny' && item.template === 'curated') score += 4;
-    score += randomInt(7) / 10; // tie-breaker only
+    score += randomInt(7) / 10;
     return score;
   }
 
   function candidateForMode() {
-    if (state.mode === 'punny') {
-      // Curated puns are deliberately frequent, while 47 generative frames provide breadth.
-      const template = randomInt(100) < 36 ? 'curated' : pick(PUN_TEMPLATES.slice(1));
-      return makePun(template);
-    }
     if (state.mode === 'funny') return makeFunny();
     if (state.mode === 'alliteration') return makeAlliteration();
     if (state.mode === 'aristocrat') return makeAristocrat();
@@ -263,8 +238,15 @@
 
   function generateBatch(count=20) {
     const history = getHistory();
+
+    if (state.mode === 'punny') {
+      state.lastBatch = generatePunnyBatch(count, history);
+      saveHistory(state.lastBatch);
+      render();
+      return;
+    }
+
     const candidateMap = new Map();
-    // Build a broad candidate set first, then score and diversify it.
     for (let i=0; i<720; i++) {
       const item = candidateForMode();
       if (!item?.name) continue;
@@ -280,7 +262,7 @@
       if (out.length >= count) break;
       if (!lengthOK(item.name) && sorted.length > count*2) continue;
       const tUse = templateUse.get(item.template)||0;
-      if (tUse >= (item.template==='curated'?7:2)) continue;
+      if (tUse >= 3) continue;
       const lead = normalize(item.name.split(/\s+/)[0]);
       if ((leadingUse.get(lead)||0) >= 2) continue;
       out.push(item);
@@ -288,7 +270,6 @@
       leadingUse.set(lead,(leadingUse.get(lead)||0)+1);
     }
 
-    // Safety fallback for very restrictive filters.
     let guard=0;
     while (out.length<count && guard++<1000) {
       const item=candidateForMode(); const key=normalize(item.name);
@@ -318,7 +299,7 @@
     fillSelect($('#length'), tr.lengths, state.length);
     $('#resultTitle').textContent=tr.modes[state.mode];
     $('#vocabStat').textContent=uniqueVocabularyCount().toLocaleString()+'+';
-    $('#templateStat').textContent=PUN_TEMPLATES.length;
+    $('#templateStat').textContent=phoneticRuleCount();
   }
 
   function render() {
@@ -329,9 +310,21 @@
     state.lastBatch.forEach((item,i)=>{
       const row=document.createElement('article'); row.className='name-row';
       row.innerHTML=`<div class="name-wrap"><div class="name"></div><div class="meaning"></div><div class="meta"></div></div><button class="copy-btn" data-index="${i}"></button>`;
-      row.querySelector('.name').textContent=item.name;
-      row.querySelector('.meaning').textContent=item.meaning;
-      row.querySelector('.meta').textContent=tr.meta[item.template] || tr.meta.wordplay;
+      const nameEl = row.querySelector('.name');
+      const meaningEl = row.querySelector('.meaning');
+      const metaEl = row.querySelector('.meta');
+
+      if (state.mode === 'punny') {
+        nameEl.textContent = `${item.name} (${item.meaning})`;
+        meaningEl.hidden = true;
+        metaEl.textContent = PUNS.labels[state.lang][item.kind] || PUNS.labels[state.lang].pun;
+      } else {
+        nameEl.textContent=item.name;
+        meaningEl.hidden = false;
+        meaningEl.textContent=item.meaning;
+        metaEl.textContent=tr.meta[item.template] || tr.meta.wordplay;
+      }
+
       row.querySelector('.copy-btn').textContent=tr.copy;
       row.querySelector('.copy-btn').setAttribute('aria-label',`${tr.copy}: ${item.name}`);
       results.appendChild(row);
